@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>Chat</title>
+    <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+</head>
+<body>
+<script>
+jQuery(function($) {
+    var $view = $('#view'),
+        $data = $('input[name="data"]');
+
+    //get data
+    function getData() {
+        $.post('comet.php?mode=view', {}, function(data) {
+            $view.html(data);
+            checkUpdate();
+        });
+    }
+
+    //update check
+    function checkUpdate() {
+        $.post('comet.php?mode=check', {}, function(data) {
+            $view.html(data);
+            checkUpdate();
+        });
+    }
+
+    $('#add').submit(function(event) {
+        event.preventDefault();
+        $.post('comet.php?mode=add', {data: $data.val()}, function(data) {
+            $data.val('');
+        });
+    });
+
+    getData();
+});
+</script>
+
+<dl>
+    <dt>data<dt>
+    <dd id="view">data is here</dd>
+</dl>
+
+<form id="add" action="../php/comet.php?mode=add" method="post">
+    <input type="text" name="data" value="" />
+    <input type="submit" value="" />
+</form>
+</body>
